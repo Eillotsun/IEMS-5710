@@ -10,6 +10,6 @@
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    std::cout << "Hello, World!\n";
+    std::cout << "Learning notes for IEMS 5710 Cryptography, Information Security and Privacy\n";
     return 0;
 }
