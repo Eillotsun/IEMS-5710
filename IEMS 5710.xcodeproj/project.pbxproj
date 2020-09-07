@@ -25,6 +25,7 @@
 /* Begin PBXFileReference section */
 		A96828532506785000358C80 /* IEMS 5710 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "IEMS 5710"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A96828562506785000358C80 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		A968285D2506788C00358C80 /* lecture1 */ = {isa = PBXFileReference; lastKnownFileType = text; path = lecture1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				A96828562506785000358C80 /* main.cpp */,
+				A968285D2506788C00358C80 /* lecture1 */,
 			);
 			path = "IEMS 5710";
 			sourceTree = "<group>";
