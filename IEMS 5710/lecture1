@@ -10,3 +10,147 @@ Summary of Today’s Lecture
     o Stream Cipher vs. Block Cipher; Symmetric vs. Asymmetric
     o How to measure the security of an encryption scheme
     o A briefing of network and system security topics
+
+
+
+CIA:
+    • Confidentiality (secrecy, privacy)
+    o Information is not exposed to unauthorized parties
+    • Integrity
+    o Information is not modified by unauthorized parties
+    or modifications can be detected
+    • Availability
+    o Information can be accessed by authorized parties at proper time
+
+• Sometimes two other desirable characteristics o Authentication and Nonrepudiation
+
+
+
+Different Kinds of Cryptanalysis：
+Based on what type of information the attacker has available
+    • Ciphertext-only: the attacker has access only to a collection of ciphertexts or code texts.
+    只知道密文 ciphertext
+    • Known-plaintext: the attacker has a set of ciphertexts to which he knows the corresponding
+    plaintext.
+    知道密文对应的明文 plaintext
+    • Chosen-plaintext (chosen-ciphertext): the attacker can obtain the ciphertexts (plaintexts)
+    corresponding to an arbitrary set of plaintexts (ciphertexts) of his own choosing. (CPA and CCA
+    security
+    可以知道任意一段明文对应的密文或者密文对应的明文
+
+
+A historical development of security techniques: three areas:
+
+    • Cryptographic techniques
+
+    After the computer era:
+    • Network security techniques
+    • System security techniques
+        o We focus on web system and software system security.
+
+
+Stream Cipher:
+
+    • Start with a secret key (“seed”)
+    • Generate a key stream
+    • Combine the stream with the plaintext to produce the ciphertext
+    这个combine的方式由我们自身定义 通常是举例为 XOR（相同为0 不相同为1）
+    
+    for example OTP(One Time Pad) 一次性密码本
+	When we have an N-bit binary string as ciphertext, We choose a random key then generate a key
+    stream which is also a N-bit binary string as long as the ciphertext.Encrypt this ciphertext by
+    combining it with key stream by XOR.
+    
+    一次性密码本十分安全但是并不实用，当我们讨论到如何评估一个密码的安全性时（How to measure the security of an encryption scheme）我们会再次提到
+    
+    OPT is very secure, but it is not practical. When we discuss how to measure the security of an
+    encryption scheme, we will mention it again
+    
+    不实用的原因是因为当我们有一个足够安全的方法去传输我们和明文等长的密钥时，我们完全可以直接传输我们的明文而不需要加密
+    
+    The reason why it is not practical is that when we have a secure enough method to transmit our
+    key as long as the plaintext, we can transfer our plaintext directly without encryption
+
+
+    o Processing message bit by bit (or byte by byte);
+    o Typically has a Pseudorandom(伪随机) Generator (PRG) to generate a key stream;
+    o Use XOR as the basic operation to combine key and plaintext (or ciphertext);
+    o The whole security is built on the security of PRG;
+    o Normally would be simpler and faster.
+
+    
+Block Cipher:
+ 
+Examples of Block Ciphers: DES AES (有空且必要的情况下补充)
+
+o Divide message block by block with fixed block size
+o Each block will go through multiple rounds of Permutations and Substitutions;
+o Multiple operations, like rotation and shifting;
+o Key dependent substitution (S-Boxes);
+o Has dedicated key scheduling process (to generate keys for each round).
+
+Asymmetric RSA
+ 
+
+How to measure the security of an encryption scheme:
+
+A symmetric encryption system is perfectly secure if for any two messages M0, M1 in the plaintext
+space and any C
+                            Pr[E(K, M0)=C] = Pr[E(K, M1)=C]
+
+就是对于任意一组随机选取的一个密钥 [K] 和两个消息 [M1 M2] ，使用该加密算法加密 [M0] 得到密文 [C] 的概率和加密 [M1]
+得到密文 [C] 的概率是相同的
+
+Given C, and even knowing the message is either M0 or M1,the attacker cannot tell which one.
+
+这种情况即使我们知道密文，甚至知道对应的是M0 \ M2,但是我们不知道到底是哪一个是其想代表的真正含义
+所以这种情况下维密文攻击（ciphertext-only）不可能成功
+
+上文所说的OTP就是这种安全的密码（但是还有很多其他的攻击方式）
+
+
+
+A briefing of network and system security topics:
+
+TSL/SSL/HTTPS:
+    The full name of HTTPS is HTTP over SSL. Encrypting HTTP data through SSL / TLS which are
+    cryptographic protocols designed to provide communications security over a computer network.
+    
+    实际上，SSL/TSL加密就是结合对称加密、非对称加密和CA（Certificate Authority）。
+    对称加密和非对称加密上面有提到，CA则是为了填补这两个加密方式的漏洞而产生的第三方认证机构。
+    因为不仅是对称加密害怕中间人攻击（adversary可以拦截Alice和Bob传递的信息并且伪造出假信息），
+    非对称加密也是会对被中间人攻击（adversary拦截住双方互发的public key，然后向对方分别发送自己的public
+    key，这样Alice和Bob就会把攻击者的public key当作对方的public key，用这个假的public
+    key来加密数据，而攻击者就可以用自己的private key解密，之后再对b进行一系列操作）。
+    
+    CA就是用来将接收方 Bob的信息和public key用自己的private key加密，使其变成Bob的数字证书。Alice此时就收到的是被加密的Bob的public key，也就是Bob的数字证书。此时用CA的证书（也就是CA的public key）就能获得Bob的public key。
+    
+    那为什么CA的public key就安全呢？？
+    因为CA的public key是内部集成在浏览器或者操作系统里面，这样adversary就无法获得这个public key，并且就算adversary拦截住了CA给Alice发送的数字证书，也无法自己伪造一份内置自己的public key的证书，因为adversary没有CA的private key。
+    
+    目前的情况是：
+        通过CA体系交换public key
+        通过非对称加密算法，交换用于对称加密的密钥
+        通过对称加密算法，加密正常的网络通信
+        
+    
+PKI(Public Key Infrastructure):
+    At present, I think it is a certificate issuing organization, which is the third party certification organization on the Internet. The principle is similar to the TSL above.
+
+    目前在我看来就是一个发证书的机构，既是网络上的第三方认证机构，原理与上述TSL类似。
+    （如果理解有误会或者有进一步需求再更新）
+    
+
+
+CSRF:
+    a look-like benign blog, but embedded with hidden crafted form request script
+
+    the crafted form request script is stealthy executed inside user's browser
+
+    if user is currently logged in OpenRice, then this hidden post is attached with valid cookie
+
+    OpenRice server thinks this hidden request is from user, thus it changes the email with
+    attackers's email
+
+(CSRF的内容以后有教学或者自学的机会在进行补充)
+
