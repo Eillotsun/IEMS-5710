@@ -26,6 +26,7 @@
 		A96828532506785000358C80 /* IEMS 5710 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "IEMS 5710"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A96828562506785000358C80 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A968285D2506788C00358C80 /* lecture1 */ = {isa = PBXFileReference; lastKnownFileType = text; path = lecture1; sourceTree = "<group>"; };
+		A9EC45A4250A7F2E00F7DB92 /* lecture 2  */ = {isa = PBXFileReference; lastKnownFileType = text; path = "lecture 2 "; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,7 +43,7 @@
 		A968284A2506785000358C80 = {
 			isa = PBXGroup;
 			children = (
-				A96828552506785000358C80 /* IEMS 5710 */,
+				A96828552506785000358C80 /* IEMS 5710 Cryptography */,
 				A96828542506785000358C80 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -55,13 +56,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A96828552506785000358C80 /* IEMS 5710 */ = {
+		A96828552506785000358C80 /* IEMS 5710 Cryptography */ = {
 			isa = PBXGroup;
 			children = (
 				A96828562506785000358C80 /* main.cpp */,
 				A968285D2506788C00358C80 /* lecture1 */,
+				A9EC45A4250A7F2E00F7DB92 /* lecture 2  */,
 			);
-			path = "IEMS 5710";
+			path = "IEMS 5710 Cryptography";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
