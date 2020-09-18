@@ -1,0 +1,160 @@
+
+Su􏰚mmary􏰛 of Today'􏰛􏰜s Lectu􏰚re
+• Stream Ciphers
+    o Basic Idea and Definition
+    o Perfect Security, Secure PRG, Semantic Security (one-time key)
+    
+• Block Ciphers
+    o Definition and Principles, DES, Triple-DES, AES
+    o Secure PRF and PRP, Semantic Security (many-time key): CPA Security
+    
+• Encryption Schemes
+    o Encryption Mode: ECB, CBC, CTR; Padding
+    o Programming practice using OpenSSL
+    
+    
+Ciphers and Encryption Schemes
+
+Ciphers are not encryption schemes; they are used to build encryption schemes.
+
+Q：Are DES/AES and RSA ciphers or encryption schemes?
+A：DES/AES and RSA are ciphers
+（这里我一开始也理解错误了，这里的cipher应该是加密的一种算法，而encryption scheme 可能是包含整套的加密流程，后续看看可不可以再补充理解一下）
+
+
+Stream Ciphers:
+    About Stream Ciphers, one-time key and Perfect Security what we have already mentioned in Lecture 1.
+    we will add the following knowledge points what we didn't mention before in lecture 1.
+
+     o Pseudorandom Generator (PRG)
+     It takes a short, truly random secret seed/key K and expands it into a longer "random-looking" sequence.
+     （实际上伪随机数不是真正意义上的随机数，是机器通过复杂运算去尽可能的模拟真实的随机情况）
+     Q:How to judge whether a pseudo-random number is qualified？
+     A program is intelligent if its input/output behavior is indistinguishable from that of a human.
+        （就是看这个程序的输入输出是不是和人类的行为没有区别）
+        Measure of the intelligence of a program is the extent the tester fails to tell the difference
+    
+     In practice
+            o Adv >=􏰟 pow(2,-30) is non-negligible; Adv <=􏰠 pow(2,-80) is negligible
+            (不要问我中间的区间怎么办，老师也不知道😂)
+            （Adv是指机器和人出现同一行为的可能性的差 Adv = |Pr(A(G(k))) = 1）- Pr(A(r) = 1)|  A() is algorithm A())
+    
+      o Semantic Security
+        Definition:
+            E is semantically secure (one-time key) if for all efficient algorithms A
+             Adv = |Pr(A(G(k))) = 1）- Pr(A(r) = 1)| is negligible(就是这个adv这个值可以忽略)
+             
+        （In my conclusion, 当adv = 0 时，Semantic Security is same as Perfect Security）
+ 
+ 
+        
+ Block Ciphers:
+     • Examples of Block Ciphers:
+         o DES: Data Encryption Standard（DES 的关键是 Feistel cipher ）
+                • DES is a block cipher - can encrypt only a block of data
+                • Block size for DES is 64 bits
+                • DES uses 56-bit keys
+                • 16 rounds in total
+                 DES 的关键是 Feistel cipher
+                 明文拆成左右 (L0) (R0) 两个部分然后用一组子密钥 (K1)不断的异或、交换 （Feistel function）
+                 那这个 K1 是怎么来的呢？-> 是由初始密钥 K 通过一些列操作变成 56bit K 再通过拆分成左右28bit的两部分循环位移 在通过PC-2压缩置换 -> 变成48bit K1
+                
+                  Triple-DES
+                • Triple—DES can solve DES's key size problem
+                • C = E(K1, D(K2, E(K3, M)))
+                • If K1􏰨 != K2􏰨 != K3, it is called 3DES3
+                • If K1=K3, it is called 3DES2
+                • If K1=K2 =K3, it can work with single DES, backward compatible
+
+
+         o AES: Advanced Encryption Standard
+             • 2001: Rijndael (by Rijmen and Daemen) selected as the AES
+                 o Block size: 128 bits
+                 o Key sizes: 128, 192, 256 bits corresponding to 10, 12, and 14 rounds
+                 
+                 原理
+                 AES 将要加密的文件 分为 N 个16bytes的 128bits数据（1byte = 8 bits）
+                 AES的内部并不直接使用提供的密钥 K ，而是通过密钥编排(Key Schedule)来产生子密钥k1,k2...kr
+                 子密钥的数量比操作轮数 r(round) 多1, r 由密钥的长度 K 来决定，如上文所提.
+                 然后通过 (1) ByteSub（Byte Substitution 字节代换） 􏰁
+                         (2) ShiftRow（行位移）
+                         􏰁(3) MixColumn（列混合）
+                 在最后一轮中，不做MixColumn操作。
+                   （这里关于AES的具体计算 我觉得并不重要🐶 目前不想深究 详细讲解 ：https://zhuanlan.zhihu.com/p/41716899 这里自取）
+                
+                
+    • Secure PRF and PRP
+        Pseudo Random Function (PRF) and Pseudo Random Permutation (PRP)
+        老师说 No need to read/remember these definitions. What you need to know is ...
+        
+        F: KxX -> 􏰝Y is a secure PRF if the advantage
+        • AdvPRF(A, F) = |Pr[A(PRF) =1] -   Pr[A(Rand) =1]| is negligible for all efficient algorithms A.
+            我们可以看到这里和上面语义安全的公式几乎是一摸一样的 理解方式也是同上
+             Secure PRP can be defined similarly
+             
+        • Secure PRP = Secure Block Cipher.
+        This is the single master property of block ciphers
+        
+        • We currently have no proof that any secure PRG, PRP, PRF exists.(G: generator, P: permutation)
+            What we can do is to give some conditions, we can prove secure or not.
+        
+        • Conjectures:
+            o DES, AES are good block ciphers in the sense of being secure PRPs to the maximum extent possible given their key and block lengths.
+
+    • Semantic Security (Many-Time Key)
+        • CPA (chosen plaintext attack) security （选择明文攻击）
+            o Encryption is secure against eavesdropping only
+            o Adversary can obtain encryption of arbitrary messages of his choice
+        • CCA (chosen ciphertext attack) security（选择密文攻击）
+            o Encryption is secure against active attacks
+            o Adversary can obtain encryption of arbitrary messages of his choice and can decrypt any ciphertext of his choice except a target ciphertext .
+            o Will not be covered in this course.（老师不讲 有机会更新吧）
+
+    • CPA Security Definition: CPA Experiment
+            Encryption scheme(K,E,D) is CPA secure if for all efficient A,
+            the advantage -> AdvCPA(A, E) = |Pr[A(EXP(0))=1] 􏰢 Pr[A(EXP(1))=1]| is negligible.
+
+
+
+Encryption Schemes：
+    • Encryption Mode
+            • M is a (padded) message of any length o M = m1|m2􏰲􏰬􏰲􏰏|..|mi where mi is n bits
+            • ci = E(k, mi) is block cipher encryption of the n-bit block mi
+            • C = E‘(k, M) is a symmetric encryption (scheme) of M
+                （这里的E’不是上面的E 是整个encryption scheme 我这里故意加上 ‘ 区分）
+        
+        Divide plaintext into blocks with size of 64-bit or 128-bit,
+        but how to connect these blocks during encryption?
+        
+        • ECB, CBC, CTR;
+            o ECB: Electronic Code Book Mode （电码本模式）
+                电码本感觉就是按照顺序来的 将M分成 m1|m2|..|mi 再按照顺序加密 -> c1|c2|..|ci ->解密时候也按照顺序解密就行了
+                Divide M into i blocks then encrypt them into c1|c2|..|ci in order
+
+              ECB Weakness : If M1 = M2 then C1 = C2.
+              容易暴露明文的数据模式，因此ECB容易遭受重放攻击
+              ECB在用于短数据(如加密密钥)时非常理想，既高效又安全，因此如果需要安全地传递DES密钥，ECB最合适不过了
+              
+            o CBC: Cipher Block Chaining Mode
+                它一次使用同一密钥对一个明文分组加密，加密算法的输入是当前明文分组和前一次密文分组的异或
+                for example E(k,mi XOR ci-1) （有一个 IV作为c0 Initialization Vector）
+              
+              CBC Weakness :
+              加密不能并行，因为每一个 mi 加密都需要依赖于前面一个mi-1
+              如果一个密文分组损坏 就会影响两个明文分组的解密
+            
+            
+            o CTR: Counter Mode（计数器模式）
+                CTR模式是一种将计数器不断累加，然后进行加密从而生成密钥流的流密码，用流密码来与不同的明文分组进行加密，这样可以并行加密并且可以解密的流程和加密一样，方便设计
+                • Q:How to get ctr?
+                • We follow the principle that (k, ctr) should never repeat.
+                    • it basically uses a counter to generate the key streams.
+                    • Since no key stream can be reused, the counter value for each block is prepended with a randomly generated value called nonce.
+                    • This nonce serves the same role as the IV does to the other encryption modes.
+                    • Both encryption and decryption can be parallelized.
+        
+        
+        • Padding:
+                • 分组加密将明文分成block，每一块的block必须满足 cipher's block size, 但是the last plaintext block 不一定能 match cipher's block size
+                • Last block of the plaintext needs padding 最后一块明文需要被“拼凑”上去
+                • Padding schemes need to clearly mark where the padding starts, so decryption can remove the padded data
